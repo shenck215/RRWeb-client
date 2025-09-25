@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "author": "shenck <shenck1807@joyowo.com>",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@rrweb/types": "2.0.0-alpha.18",
+    "classnames": "2.5.1",
+    "rrweb": "2.0.0-alpha.18",
+    "rrweb-player": "2.0.0-alpha.18",
+    "styled-components": "6.1.19",
+    "umi": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@umijs/plugins": "4.5.1",
+    "typescript": "^5.9.2"
+  }
+}
