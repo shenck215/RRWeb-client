@@ -3,7 +3,7 @@ import { history, Outlet, useLocation } from "umi";
 
 import styles from "./index.less";
 import classNames from "classnames";
-import RecordComponent from "@/components/RRWeb/record";
+import { RecordComponent } from "@joyo-dev1/react-components";
 
 const BasicLayout = () => {
 	const { pathname } = useLocation();

@@ -1,4 +1,4 @@
-import ReplayComponent from "@/components/RRWeb/replay";
+import { ReplayComponent } from "@joyo-dev1/react-components";
 
 const Index = () => {
 	return (

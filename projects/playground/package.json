@@ -1,0 +1,25 @@
+{
+  "name": "@joyo-dev1/playground",
+  "version": "0.1.0",
+  "description": "react 调试项目",
+  "private": true,
+  "author": "shenck <shenck1807@joyowo.com>",
+  "scripts": {
+    "dev": "umi dev",
+    "build": "umi build",
+    "postinstall": "umi setup",
+    "setup": "umi setup",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@joyo-dev1/react-components": "workspace:*",
+    "classnames": "2.5.1",
+    "umi": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "@umijs/plugins": "4.5.1",
+    "typescript": "^5.9.2"
+  }
+}

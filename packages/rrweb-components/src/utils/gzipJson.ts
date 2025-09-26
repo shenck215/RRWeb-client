@@ -38,7 +38,7 @@ const hasCompressionStream = (): boolean => {
     if (typeof CompressionStream === 'undefined') return false;
     // 这里 new 一下是为了验证 'gzip' 格式是否真的支持
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _ = new CompressionStream('gzip');
+    new CompressionStream('gzip');
     return true;
   } catch {
     return false;

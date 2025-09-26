@@ -1,0 +1,38 @@
+{
+	"name": "@joyo-dev1/react-components",
+	"version": "0.1.0",
+	"description": "rrweb react 组件库",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "lib",
+    "es",
+    "types"
+  ],
+  "sideEffects": "false",
+	"scripts": {
+    "build": "bpoBuilder"
+	},
+  "keywords": [
+    "react",
+    "rrweb",
+    "component",
+    "react-component"
+  ],
+	"author": "shenck1807@joyowo.com",
+	"license": "ISC",
+  "dependencies": {
+    "@rrweb/types": "2.0.0-alpha.18",
+    "core-js": "3.31.0",
+    "rrweb": "2.0.0-alpha.18",
+    "rrweb-player": "2.0.0-alpha.18",
+    "styled-components": "6.1.19"
+  },
+  "devDependencies": {
+    "@jy-bpo/builder": "0.2.2",
+    "@types/react": "19.1.13",
+    "@types/react-dom": "19.1.9",
+    "typescript": "5.9.2"
+  }
+}

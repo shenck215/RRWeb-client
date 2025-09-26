@@ -1,0 +1,2 @@
+export { default as RecordComponent } from "./record";
+export { default as ReplayComponent } from "./replay";

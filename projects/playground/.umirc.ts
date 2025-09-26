@@ -15,5 +15,14 @@ export default defineConfig({
 	],
 	plugins: ["@umijs/plugins/dist/styled-components"],
 	styledComponents: {},
+	monorepoRedirect: { srcDir: ["src"], peerDeps: true },
+  mfsu: {
+    shared: {
+      react: { singleton: true },
+      'react-dom': { singleton: true },
+      'react/jsx-runtime': { singleton: true },
+      'react/jsx-dev-runtime': { singleton: true },
+    },
+  },
 	npmClient: "pnpm",
 });
