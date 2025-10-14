@@ -1,2 +1,7 @@
+.umi
+.umi-production
+es
+lib
+dist
 pnpm-lock.yaml
 node_modules
