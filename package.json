@@ -10,6 +10,5 @@
     "rrweb-build": "pnpm -F @joyo-dev1/react-components build",
     "playground-dev": "pnpm -F @joyo-dev1/playground start",
     "playground-build": "pnpm -F @joyo-dev1/playground build"
-  },
-  "packageManager": "pnpm@7.18.2"
+  }
 }
