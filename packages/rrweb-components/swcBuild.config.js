@@ -6,6 +6,9 @@ module.exports = {
 	coreJs: "3.31.0",
 	tsConfig: {
 		compilerOptions: {
+			module: "NodeNext",
+			moduleResolution: "NodeNext",
+			target: "ESNext",
 			lib: ["DOM", "ES2017"],
 		},
 		typeRoots: [],
