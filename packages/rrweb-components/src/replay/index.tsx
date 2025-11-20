@@ -30,7 +30,7 @@ interface RRWebPlayerInstance {
 type PlayerRef = RRWebPlayerInstance | null;
 
 /** 后端基础路径（按需改成你的网关地址） */
-const apiBase = "http://localhost:4000";
+const apiBase = "https://rrweb-server.shenck215.workers.dev";
 
 /** ========= 组件 ========= */
 

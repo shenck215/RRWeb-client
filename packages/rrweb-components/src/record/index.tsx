@@ -36,7 +36,7 @@ console.log(
 /** =========================
  * 可配置参数
  * ========================= */
-const apiBase = "http://localhost:4000";
+const apiBase = "https://rrweb-server.shenck215.workers.dev";
 
 const BATCH_INTERVAL = 3000; // 定时 flush 周期（ms）
 const BATCH_SIZE = 50; // 条数阈值
@@ -81,8 +81,10 @@ const roughSizeOf = (obj: unknown): number =>
 	new Blob([JSON.stringify(obj)]).size;
 
 const RecordComponent: React.FC = () => {
+	const [startDisabled, setStartDisabled] = useState(false);// 开始录制按钮防重
+	const [endDisabled, setEndDisabled] = useState(false);// 停止录制按钮防重
 	const [sessionId, setSessionId] = useState<string>("");
-	const [isRecording, setIsRecording] = useState<boolean>(false);
+	const [isRecording, setIsRecording] = useState<boolean>(false);// 是否录制中
 
 	/** rrweb 停止函数（record 的返回值） */
 	const stopFn = useRef<listenerHandler | null>(null);
@@ -339,70 +341,89 @@ const RecordComponent: React.FC = () => {
 
 	/** 开始录制 */
 	const handleStartRecord = async (): Promise<void> => {
-		let curSessionId = sessionId;
-		if (!curSessionId) {
-			curSessionId = await createSession();
-			setSessionId(curSessionId);
+		if (startDisabled) {
+			return;
 		}
+		setStartDisabled(true);
+		try {
+			let curSessionId = sessionId;
+			if (!curSessionId) {
+				curSessionId = await createSession();
+				setSessionId(curSessionId);
+			}
 
-		// 开始前先做一次历史续传
-		await resumePending(curSessionId);
+			// 开始前先做一次历史续传
+			await resumePending(curSessionId);
 
-		// 启动 rrweb
-		const stop = record({
-			emit(event: eventWithTime) {
-				buffer.current.push(event);
+			// 启动 rrweb
+			const stop = record({
+				emit(event: eventWithTime) {
+					buffer.current.push(event);
 
-				const tooMany = buffer.current.length >= BATCH_SIZE;
-				const tooBig = roughSizeOf(buffer.current) >= MAX_BATCH_BYTES;
+					const tooMany = buffer.current.length >= BATCH_SIZE;
+					const tooBig = roughSizeOf(buffer.current) >= MAX_BATCH_BYTES;
 
-				if (tooMany || tooBig) {
-					void flush(curSessionId); // fire-and-forget，避免阻塞 emit
-				}
-			},
-			// 隐私/采集策略（按需调整）
-			maskAllInputs: true,
-			blockClass: "rr-block",
-			ignoreClass: "rr-ignore",
-			maskTextClass: "rr-mask",
-			inlineStylesheet: true,
-			recordCanvas: true,
-			slimDOMOptions: {
-				script: true,
-				comment: true,
-				headFavicon: true,
-				headWhitespace: true,
-			},
-		});
+					if (tooMany || tooBig) {
+						void flush(curSessionId); // fire-and-forget，避免阻塞 emit
+					}
+				},
+				// 隐私/采集策略（按需调整）
+				maskAllInputs: true,
+				blockClass: "rr-block",
+				ignoreClass: "rr-ignore",
+				maskTextClass: "rr-mask",
+				inlineStylesheet: true,
+				recordCanvas: true,
+				slimDOMOptions: {
+					script: true,
+					comment: true,
+					headFavicon: true,
+					headWhitespace: true,
+				},
+			});
 
-		if (stop) {
-			stopFn.current = stop;
+			if (stop) {
+				stopFn.current = stop;
+			}
+
+			// 启动周期 flush + 心跳
+			scheduleFlush(curSessionId);
+			startHeartbeat(curSessionId);
+
+			setIsRecording(true);
+			setStartDisabled(false);
+			console.log("recording started", { curSessionId });
+		} catch (error) {
+			setStartDisabled(false);
 		}
-
-		// 启动周期 flush + 心跳
-		scheduleFlush(curSessionId);
-		startHeartbeat(curSessionId);
-
-		setIsRecording(true);
-		console.log("recording started", { curSessionId });
 	};
 
 	/** 停止录制 */
 	const handleStopRecord = async (): Promise<void> => {
-		if (stopFn.current) {
-			stopFn.current();
-			stopFn.current = null;
+		if (endDisabled) {
+			return;
 		}
+		setEndDisabled(true);
+		try {
+			if (stopFn.current) {
+				stopFn.current();
+				stopFn.current = null;
+			}
 
-		stopScheduleFlush();
-		stopHeartbeat();
+			stopScheduleFlush();
+			stopHeartbeat();
 
-		// 把内存 buffer 最后一批入库并尝试发送（真正发送由队列统一完成）
-		await flush(sessionId);
-		await processPendingQueue(sessionId);
+			// 把内存 buffer 最后一批入库并尝试发送（真正发送由队列统一完成）
+			await flush(sessionId);
+			await processPendingQueue(sessionId);
 
-		setIsRecording(false);
-		console.log("recording stopped");
+			setIsRecording(false);
+			setEndDisabled(false);
+			setSessionId("");
+			console.log("recording stopped");
+		} catch (error) {
+			setEndDisabled(false);
+		}
 	};
 
 	/** 页面生命周期兜底：隐藏/关闭时尽量把内存入库并触发一次发送（小包走 keepalive） */
